@@ -36,6 +36,9 @@ function convertToClientFormat(selected_config, esResponse) {
     var event = {};
     var source =  hits[i]._source;
 
+    console.log('Source: ');
+    console.log(source);
+
     event.id = hits[i]._id;
     var get = require('lodash.get');
     event['timestamp'] = get(source, selected_config.fields.mapping['timestamp']);
@@ -52,13 +55,19 @@ function convertToClientFormat(selected_config, esResponse) {
       source[selected_config.fields.mapping['message']] = hits[i].highlight[selected_config.fields.mapping['message']][0];
     }
     var message = source[selected_config.fields.mapping['message']];
+    console.log('Message: ');
+    console.log(message);
+    console.log('Message format: ');
+    console.log(message_format);
     //If the user has specified a custom format for message field
     if (message_format) {
       event['message'] = template(source);
     } else {
       event['message'] = escape(message);
     }
-    //console.log(event.message);
+    
+    console.log('Event: ');
+    console.log(event);
     clientResponse.push(event);
   }
   return clientResponse;
